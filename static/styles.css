@@ -1,6 +1,6 @@
-/* Base page style */
 body {
-  background: linear-gradient(135deg, #eaf0fb 0%, #d3e2f9 100%);
+  background: url("/static/background.jpg") no-repeat center center fixed;
+  background-size: cover;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   padding: 0;
@@ -9,54 +9,15 @@ body {
   position: relative;
 }
 
-/* Fade animation */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Floating particle background */
-.background-particles {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  z-index: -2;
-  background-image:
-    radial-gradient(circle, rgba(78,115,223,0.08) 1px, transparent 1px),
-    radial-gradient(circle, rgba(78,115,223,0.05) 1px, transparent 1px);
-  background-size: 30px 30px;
-  animation: floatParticles 50s linear infinite;
-  opacity: 0.25;
-}
-
-/* Particle animation */
-@keyframes floatParticles {
-  0% { background-position: 0 0, 0 0; }
-  100% { background-position: 1000px 1000px, -1000px -1000px; }
-}
-
-/* Abstract bottom wave */
-.wave-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  overflow: hidden;
-  line-height: 0;
-  z-index: -1;
-}
-
-.wave-container svg {
-  display: block;
-  width: calc(200% + 1.3px);
-  height: 100px;
-}
-
-/* Dashboard container box */
 .dashboard-container {
   max-width: 650px;
   margin: 50px auto;
-  background: #ffffff;
+  background: rgba(255, 255, 255, 0.9);  /* translucent background for readability */
   padding: 40px;
   border-radius: 16px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -65,7 +26,6 @@ body {
   z-index: 1;
 }
 
-/* Header */
 .header h1 {
   font-size: 1.75rem;
   font-weight: 700;
@@ -79,7 +39,6 @@ body {
   margin-top: 4px;
 }
 
-/* Form elements */
 .form-label {
   font-weight: 500;
   color: #333333;
@@ -101,7 +60,6 @@ body {
   box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.25);
 }
 
-/* Button styling */
 .btn-primary {
   background-color: #4e73df;
   border: none;
@@ -122,8 +80,6 @@ body {
   transform: scale(0.98);
 }
 
-
-/* Loading Overlay */
 #loading-overlay {
   position: fixed;
   top: 0;
@@ -138,7 +94,6 @@ body {
   z-index: 9999;
 }
 
-/* Spinner Style */
 .spinner {
   width: 60px;
   height: 60px;
@@ -151,33 +106,4 @@ body {
 @keyframes spin {
   0%   { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-/* --- Floating Particle Background --- */
-.particle-container {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  pointer-events: none;
-}
-
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
-  animation: float 20s linear infinite;
-  opacity: 0.5;
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(100vh) scale(0.3);
-  }
-  100% {
-    transform: translateY(-10vh) scale(1);
-  }
 }
