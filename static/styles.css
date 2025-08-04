@@ -1,0 +1,183 @@
+/* Base page style */
+body {
+  background: linear-gradient(135deg, #eaf0fb 0%, #d3e2f9 100%);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  animation: fadeIn 0.6s ease-in;
+  position: relative;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating particle background */
+.background-particles {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: -2;
+  background-image:
+    radial-gradient(circle, rgba(78,115,223,0.08) 1px, transparent 1px),
+    radial-gradient(circle, rgba(78,115,223,0.05) 1px, transparent 1px);
+  background-size: 30px 30px;
+  animation: floatParticles 50s linear infinite;
+  opacity: 0.25;
+}
+
+/* Particle animation */
+@keyframes floatParticles {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 1000px 1000px, -1000px -1000px; }
+}
+
+/* Abstract bottom wave */
+.wave-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+  z-index: -1;
+}
+
+.wave-container svg {
+  display: block;
+  width: calc(200% + 1.3px);
+  height: 100px;
+}
+
+/* Dashboard container box */
+.dashboard-container {
+  max-width: 650px;
+  margin: 50px auto;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  animation: fadeIn 0.8s ease-in;
+  position: relative;
+  z-index: 1;
+}
+
+/* Header */
+.header h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 0.95rem;
+  color: #555555;
+  margin-top: 4px;
+}
+
+/* Form elements */
+.form-label {
+  font-weight: 500;
+  color: #333333;
+}
+
+.form-control,
+.form-select {
+  border-radius: 8px;
+  border: 1px solid #ced4da;
+  height: 48px;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  transition: box-shadow 0.2s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #4e73df;
+  box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.25);
+}
+
+/* Button styling */
+.btn-primary {
+  background-color: #4e73df;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  transition: background-color 0.3s, transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #2e59d9;
+  transform: scale(1.02);
+}
+
+.btn-primary:active {
+  background-color: #224abe;
+  transform: scale(0.98);
+}
+
+
+/* Loading Overlay */
+#loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(250, 250, 250, 0.7);
+  backdrop-filter: blur(2px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+/* Spinner Style */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid #cbd5f0;
+  border-top: 6px solid #4e73df;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* --- Floating Particle Background --- */
+.particle-container {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  animation: float 20s linear infinite;
+  opacity: 0.5;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(100vh) scale(0.3);
+  }
+  100% {
+    transform: translateY(-10vh) scale(1);
+  }
+}

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"> 
+  <title>MDO Smart Entry Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    body {
+      background-color: #FFFFFF;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      animation: fadeIn 0.6s ease-in;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-container {
+      max-width: 650px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      animation: fadeIn 0.8s ease-in;
+      position: relative;
+      z-index: 1;
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 8px;
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: #333333;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: #4e73df;
+      box-shadow: 0 0 0 0.15rem rgba(78, 115, 223, 0.25);
+    }
+
+    .btn-primary {
+      background-color: #4e73df;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #2e59d9;
+      transform: scale(1.02);
+    }
+
+    .btn-primary:active {
+      background-color: #224abe;
+      transform: scale(0.98);
+    }
+
+    /* ❄️ Snowflake Animation Styles */
+    .snowflake {
+      position: fixed;
+      top: 0;
+      font-size: 10px;
+      color: white;
+      opacity: 0.8;
+      pointer-events: none;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(110vh) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ❄️ Snowflake container -->
+  <script>
+    const snowflakeCount = 100;
+
+    for (let i = 0; i < snowflakeCount; i++) {
+      const flake = document.createElement('div');
+      flake.classList.add('snowflake');
+      flake.textContent = '❄️';
+      flake.style.left = `${Math.random() * 100}vw`;
+      flake.style.top = `${Math.random() * -100}vh`;  // Random negative to avoid top stacking
+      flake.style.fontSize = `${Math.random() * 10 + 12}px`;
+      flake.style.animationDuration = `${Math.random() * 15 + 10}s`;
+      flake.style.animationDelay = `${Math.random() * 5}s`;
+      document.body.appendChild(flake);
+    }
+  </script>
+
+  <div class="dashboard-container">
+    <div class="text-center mb-4 header">
+      <h1>📄 MDO Smart Entry Dashboard</h1>
+      <p class="text-muted">Digitize your QA Sheets, Grinding Logs & MPI Reports</p>
+    </div>
+
+    <form method="post" action="/upload" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label class="form-label">Upload Image:</label>
+        <input type="file" name="image" class="form-control" required>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Choose Excel Template:</label>
+        <select name="format" class="form-select" required>
+          <option disabled selected value="">-- Select a template --</option>
+          {% for t in templates|sort %}
+            <option value="{{ t }}">{{ t.replace('.xlsx', '').replace('_', ' ').title() }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">Extract & Download Excel</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
