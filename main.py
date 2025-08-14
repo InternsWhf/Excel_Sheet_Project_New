@@ -5,13 +5,16 @@ from openpyxl import load_workbook
 from openpyxl.cell.cell import MergedCell
 from io import BytesIO
 from dotenv import load_dotenv
-import openai
 from datetime import datetime
+from PIL import Image
+from pdf2image import convert_from_bytes
+import openai
 
 # Initialize Flask App
 app = Flask(__name__)
 load_dotenv()
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
 
 @app.route('/')
 def index():
@@ -20,17 +23,35 @@ def index():
     templates = os.listdir(formats_path)
     return render_template("index.html", templates=templates)
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
-    image = request.files.get("image")
+    file = request.files.get("image")
     template_name = request.form.get("format")
 
-    if not image or not template_name:
+    if not file or not template_name:
         return "Missing image or template", 400
 
-    # Convert image to base64
-    image_b64 = base64.b64encode(image.read()).decode("utf-8")
-    image_url = f"data:image/jpeg;base64,{image_b64}"
+    filename = file.filename.lower()
+
+    try:
+        # ✅ Handle PDF Uploads
+        if filename.endswith(".pdf"):
+            pages = convert_from_bytes(file.read(), dpi=300, first_page=1, last_page=1)
+            if not pages:
+                return "❌ No page found in PDF", 400
+            image_pil = pages[0]
+        else:
+            image_pil = Image.open(file.stream)
+
+        # ✅ Convert image to base64
+        buffered = BytesIO()
+        image_pil.save(buffered, format="JPEG")
+        image_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        image_url = f"data:image/jpeg;base64,{image_b64}"
+
+    except Exception as e:
+        return f"❌ Image or PDF processing failed: {e}", 500
 
     # ========== PROMPT SELECTION ==========
 
@@ -69,7 +90,6 @@ Each row includes:
 ⚠️ Do not summarize, skip, or comment. Return ONLY the JSON array.
 """
     else:
-        # Default prompt (for SHOT BLASTING, MPI PAGE 1, MPI PAGE 2, etc.)
         prompt = """
 You are an expert OCR model. The image shows a handwritten table with **two sets of columns side-by-side**:
 
@@ -92,7 +112,7 @@ You are an expert OCR model. The image shows a handwritten table with **two sets
 ⚠️ Return ONLY the valid JSON array — no explanation or comments.
 """
 
-    # Call GPT-4o Vision API
+    # ✅ Call GPT-4o Vision API
     try:
         response = openai.chat.completions.create(
             model="gpt-4o",
@@ -104,15 +124,12 @@ You are an expert OCR model. The image shows a handwritten table with **two sets
         )
 
         result = response.choices[0].message.content
-
-        # Extract JSON
         match = re.search(r"\[\s*{.*?}\s*\]", result, re.DOTALL)
         if not match:
             return "❌ No valid JSON found in GPT response", 500
 
         json_str = match.group(0)
 
-        # Optional: Save JSON result for debugging
         with open("debug_output.json", "w", encoding="utf-8") as debug_file:
             debug_file.write(json_str)
 
@@ -122,7 +139,7 @@ You are an expert OCR model. The image shows a handwritten table with **two sets
     except Exception as e:
         return f"❌ GPT-4o failed: {e}", 500
 
-    # Prepare output path
+    # ✅ Prepare Excel output
     output_dir = "outputs"
     os.makedirs(output_dir, exist_ok=True)
 
@@ -132,26 +149,29 @@ You are an expert OCR model. The image shows a handwritten table with **two sets
     output_path = os.path.join(output_dir, output_file)
     shutil.copy(template_path, output_path)
 
-    # Load workbook and fill it
-    wb = load_workbook(output_path)
-    ws = wb.active
+    try:
+        wb = load_workbook(output_path)
+        ws = wb.active
 
-    # Write headers in Row 2 (skip merged cells)
-    for j, col in enumerate(df.columns):
-        cell = ws.cell(row=2, column=j+1)
-        if not isinstance(cell, MergedCell):
-            cell.value = col
-
-    # Write data from Row 3 onward
-    for i, row in df.iterrows():
-        for j, val in enumerate(row):
-            cell = ws.cell(row=i+3, column=j+1)
+        for j, col in enumerate(df.columns):
+            cell = ws.cell(row=2, column=j+1)
             if not isinstance(cell, MergedCell):
-                cell.value = val
+                cell.value = col
 
-    wb.save(output_path)
-    print(f"✅ Excel saved: {output_path}")
+        for i, row in df.iterrows():
+            for j, val in enumerate(row):
+                cell = ws.cell(row=i+3, column=j+1)
+                if not isinstance(cell, MergedCell):
+                    cell.value = val
+
+        wb.save(output_path)
+        print(f"✅ Excel saved: {output_path}")
+
+    except Exception as e:
+        return f"❌ Excel Write failed: {e}", 500
+
     return send_file(output_path, as_attachment=True)
+
 
 if __name__ == '__main__':
     print("✅ Flask OCR server started at http://127.0.0.1:5000")

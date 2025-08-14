@@ -26,7 +26,7 @@
     .dashboard-container {
       max-width: 650px;
       margin: 50px auto;
-      background: rgba(255, 255, 255, 0.9); /* Semi-transparent white */
+      background: rgba(255, 255, 255, 0.9);
       padding: 40px;
       border-radius: 16px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
@@ -78,13 +78,13 @@
   <div class="dashboard-container">
     <div class="text-center mb-4 header">
       <h1>📕 MDO Smart Entry Dashboard</h1>
-      <p class="text-muted">Digitize your QA Sheets, Grinding Logs & MPI Reports</p>
+      <p class="text-muted">Digitize your Shot Blasting, Grinding Logs & MPI Reports</p>
     </div>
 
     <form method="post" action="/upload" enctype="multipart/form-data">
       <div class="mb-3">
-        <label class="form-label">Upload Image:</label>
-        <input type="file" name="image" class="form-control" required>
+        <label class="form-label">Upload Image or PDF:</label>
+        <input type="file" name="image" class="form-control" accept=".jpg,.jpeg,.png,.pdf" required>
       </div>
 
       <div class="mb-3">
